@@ -52,9 +52,21 @@ async function createTrack(isrc) {
 }
 
 async function getByISRC(isrc) {
-    return {
-        isrc
+
+    const searchQuery = `SELECT * FROM Track WHERE ISRC = '${isrc}'`;
+
+    const result = await queryToBd(searchQuery);
+
+    if(result.length > 0){
+        const artistQuery = `SELECT * FROM Artist WHERE Id = '${result[0].Artist}'`;
+        const artist = await queryToBd(artistQuery);
+        result[0].Artist = artist[0].Name;
+        return result[0];
+
+    }else {
+        return "Not found"
     }
+
 }
 
 async function getByArtist(artist) {
