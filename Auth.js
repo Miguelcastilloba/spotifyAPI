@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import qs from 'qs';
 dotenv.config()
 
-async function Auth(){
+export default async function Auth(){
 
 var clientId = process.env.CLIENT_ID;
 var clientSecret = process.env.CLIENT_SECRET;
@@ -27,4 +27,3 @@ return axios(authOptions).then(response => response.data.access_token).catch(fun
 
 }
 
-export{Auth};
