@@ -3,7 +3,7 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 
-import { createTrack, getByISRC, getByArtist } from './Controller/spotify.js';
+import { createTrack, getByISRC, getByArtist } from './spotify.js';
 
 dotenv.config();
 
