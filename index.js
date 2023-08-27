@@ -1,5 +1,3 @@
-//simple express server with POST /createTrack and GET /getByISRC and /getByArtist endpoints
-
 import express from 'express';
 import * as dotenv from 'dotenv';
 
