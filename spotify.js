@@ -17,7 +17,7 @@ async function createTrack(isrc) {
 
     let Options = {
         method: 'get',
-        url:`https://api.spotify.com/v1/tracks/${isrc}`,
+        url:`https://api.spotify.com/v1/search?type=track&q=isrc:${isrc}`,
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -25,11 +25,29 @@ async function createTrack(isrc) {
 
     const response = await axiosRequest(Options);
 
+    var trackartist, tracktitle, trackimageUrl, trackpopularity;
+
+    //Iterate through spotify api response and get the highest popularity track
+
+    for (let i = 0; i < response.tracks.items.length; i++) {
+        if (i == 0) {
+            trackartist = response.tracks.items[i].artists[0].name;
+            tracktitle = response.tracks.items[i].name;
+            trackimageUrl = response.tracks.items[i].album.images[0].url;
+            trackpopularity = response.tracks.items[i].popularity;
+        }else if (response.tracks.items[i].popularity > trackpopularity) {
+            trackartist = response.tracks.items[i].artists[0].name;
+            tracktitle = response.tracks.items[i].name;
+            trackimageUrl = response.tracks.items[i].album.images[0].url;
+            trackpopularity = response.tracks.items[i].popularity;
+        }
+    }
+
     const track = {
         ISRC: isrc,
-        artist: response.artists[0].name,
-        title: response.name,
-        imageUrl: response.album.images[0].url,
+        artist: trackartist,
+        title: tracktitle,
+        imageUrl: trackimageUrl,
     }
 
     var artist = await getArtist(track.artist, "Strict");
@@ -40,7 +58,7 @@ async function createTrack(isrc) {
         artist = await getArtist(track.artist, "Strict");
     }
 
-    const query = `INSERT INTO Track (ISRC, Artist, Title, ImageUrl) VALUES ('${track.ISRC}', '${artist}', '${track.title}' , '${track.imageUrl}')`;
+    const query = `INSERT INTO Track (ISRC, Artist, Title, ImageUrl) VALUES ('${track.ISRC}', '${artist}', '${track.title}' , '${track.imageUrl}') on duplicate key update Title='${track.title}';`;
 
     const alterRows = queryToBd(query);
 
@@ -73,16 +91,30 @@ async function getByArtist(artist) {
 
     const artistId = await getArtist(artist, "Fuzzy");
 
-    const trackQuery = `SELECT * FROM Track WHERE Artist = '${artistId}'`;
-    var Tracks = await queryToBd(trackQuery);
+    var Ids = [];
 
-    if (Tracks.length > 0) {
-        for (let i = 0; i < Tracks.length; i++) {
-            const artistQuery = `SELECT * FROM Artist WHERE Id = '${Tracks[i].Artist}'`;
-            const artist = await queryToBd(artistQuery);
-            Tracks[i].Artist = artist[0].Name;
+    if (artistId != "Not found") {
+        for (let i = 0; i < artistId.length; i++) {
+            Ids.push(artistId[i].Id);
+        }
+    }else{
+        return "Not found"
+    }
+
+    var Tracks = [];
+    for (let i = 0; i < Ids.length; i++) {
+        const trackQuery = `SELECT * FROM Track WHERE Artist = '${Ids[i]}'`;
+        var Tracks2 = await queryToBd(trackQuery);
+        if (Tracks2.length > 0) {
+            for (let i = 0; i < Tracks2.length; i++) {
+                const artistQuery = `SELECT * FROM Artist WHERE Id = '${Tracks2[i].Artist}'`;
+                const artist = await queryToBd(artistQuery);
+                Tracks2[i].Artist = artist[0].Name;
+            }
+            Tracks = Tracks.concat(Tracks2);
         }
     }
+
     
     if (artist == "Not found") {
         return "Not found"
@@ -108,9 +140,12 @@ async function getArtist(artistName, mode){
 
     const result = await queryToBd(query);
 
-    if(result.length > 0){
+    if(result.length > 0 && mode == "Strict"){
         return result[0].Id;
-    }else {
+    }else if (result.length > 0 && mode == "Fuzzy") {
+        return result;
+    }
+    else {
         return "Not found"
     }
 
