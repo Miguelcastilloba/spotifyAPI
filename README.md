@@ -1,6 +1,6 @@
-# spotifyAPI
+# SpotifyAPI
 
-##Install & Run:
+## Install & Run:
 
 <ol>
 <li> Add the included DB ./Databases/spotify.sql to your brefered mySQL Manager (I used XAMPP) </li>
