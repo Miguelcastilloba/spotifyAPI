@@ -27,7 +27,11 @@ async function createTrack(isrc) {
 
     var trackartist, tracktitle, trackimageUrl, trackpopularity;
 
-    //Iterate through spotify api response and get the highest popularity track
+   
+    if (response.tracks.items.length == 0) {
+        return JSON.stringify({"Status":"Not found"});
+    }
+
 
     for (let i = 0; i < response.tracks.items.length; i++) {
         if (i == 0) {
@@ -63,7 +67,7 @@ async function createTrack(isrc) {
     const alterRows = queryToBd(query);
 
     if (alterRows.affectedRows == 0) {
-        return "Error"
+        return JSON.stringify({"Status":"Error"});
     }else {
         return track;
     }
@@ -82,7 +86,7 @@ async function getByISRC(isrc) {
         return result[0];
 
     }else {
-        return "Not found"
+        return JSON.stringify({"Status":"Not found"});
     }
 
 }
@@ -98,7 +102,7 @@ async function getByArtist(artist) {
             Ids.push(artistId[i].Id);
         }
     }else{
-        return "Not found"
+        return JSON.stringify({"Status":"Not found"});
     }
 
     var Tracks = [];
@@ -117,7 +121,7 @@ async function getByArtist(artist) {
 
     
     if (artist == "Not found") {
-        return "Not found"
+        return JSON.stringify({"Status":"Not found"});
     }else {
         return Tracks;
     }
