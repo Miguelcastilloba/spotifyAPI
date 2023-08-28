@@ -1,0 +1,76 @@
+{
+	"info": {
+		"_postman_id": "3d70c625-11d3-4026-bd98-441dda2a528d",
+		"name": "Spotify",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "21162268"
+	},
+	"item": [
+		{
+			"name": "get track by Artist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/getByArtist?artist=ryan castro",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"getByArtist"
+					],
+					"query": [
+						{
+							"key": "artist",
+							"value": "ryan castro"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get track by ISRC",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/getByISRC?isrc=loremipsum",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"getByISRC"
+					],
+					"query": [
+						{
+							"key": "isrc",
+							"value": "loremipsum"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create track",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"isrc\":\"XXXXXX\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/createTrack"
+			},
+			"response": []
+		}
+	]
+}
