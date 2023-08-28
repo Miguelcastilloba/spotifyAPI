@@ -13,3 +13,14 @@ Application will run into localhost:3000
 You can check endpoint definitions [here](https://app.swaggerhub.com/apis/a22110158/Spotify-Api/1.0#/default/post_createTrack)
 
 
+## .ENV File
+
+PORT=
+CLIENT_ID=
+CLIENT_SECRET=
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+
+
